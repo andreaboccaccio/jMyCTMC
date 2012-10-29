@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jMyCTCM" basedir="." default="all">
+	<property name="author"	value="Andrea Boccaccio"/>
+	<property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+	<property name="dist.dir"   value="dist"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+	<property name="jarlib.dir"	value="${jar.dir}/lib"/>
+    <property name="library.dir" value="${basedir}/lib"/>
+	<property name="distlib.dir"	value="${dist.dir}/lib"/>
+	<property name="zipdist.dir"	value="${basedir}/zipDist" />
+	<property name="tgzdist.dir"	value="${basedir}/tgzDist"/>
+	<property name="impl.ver"	value="0.0.1"/>
+	<property name="mainClass"	value="jMyCTCM.JMyCTCM"/>
+    
+	<path id="libraries">
+		<fileset dir="${library.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<property name="dep_cp" value="${toString:libraries}" />
+	
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    	<delete dir="${dist.dir}"/>
+    </target>
+    
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac classpathref="libraries" srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+	
+	<target name="createJarDirectories">
+		<mkdir dir="${jar.dir}" />
+		<mkdir dir="${jarlib.dir}" />
+	</target>
+	
+	<target name="createDistDirectories">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${distlib.dir}" />
+	</target>
+    
+    <target name="copy-resources" depends="createJarDirectories">
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.dtd"/>
+			</fileset>
+		</copy>
+    	<copy todir="${jarlib.dir}">
+			<fileset dir="${library.dir}">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+    <target name="jar" depends="compile,copy-resources">
+    	<manifestclasspath property="manifest_cp" jarfile="${jar.dir}/${ant.project.name}-${impl.ver}.jar">
+	        <classpath>
+	        	<fileset dir="${jarlib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+	        </classpath>
+	    </manifestclasspath>
+        <jar destfile="${jar.dir}/${ant.project.name}-${impl.ver}.jar" basedir="${classes.dir}">
+            <manifest>
+            	<attribute name="Main-Class" value="${mainClass}"/>
+            	<attribute name="Class-Path" value="${manifest_cp}"/>
+                <attribute name="Built-By" value="${author}"/>
+            	<attribute name="Implementation-Title" value="${ant.project.name}"/>
+            	<attribute name="Implementation-Version" value="${impl.ver}"/>
+            </manifest>
+        </jar>
+    </target>
+	
+	<target name="prepareDist" depends="clean,jar">
+	<copy todir="${dist.dir}">
+		<fileset dir="${jar.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</copy>
+	<copy todir="${distlib.dir}">
+		<fileset dir="${library.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</copy>
+	</target>
+	
+	<target name="createZipDirectory">
+		<delete dir="${zipdist.dir}"/>
+		<mkdir dir="${zipdist.dir}"/>
+	</target>
+	
+	<target name="createTgzDirectory">
+		<delete dir="${tgzdist.dir}"/>
+		<mkdir dir="${tgzdist.dir}"/>
+	</target>
+	
+	<target name="createZip" depends="createZipDirectory,prepareDist">
+		<zip destfile="${zipdist.dir}/${ant.project.name}-${impl.ver}.zip" basedir="${dist.dir}" />
+	</target>
+	
+	<target name="createTgz" depends="createZipDirectory,prepareDist">
+		<tar destfile="${tgzdist.dir}/${ant.project.name}-${impl.ver}.tar.gz" basedir="${dist.dir}" compression="gzip" />
+	</target>
+	
+	<target name="all" depends="createZip,createTgz" />
+    
+</project>
