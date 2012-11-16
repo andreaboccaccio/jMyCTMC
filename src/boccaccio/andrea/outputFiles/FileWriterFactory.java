@@ -15,6 +15,6 @@ public class FileWriterFactory {
 	}
 	
 	public IFileWriter getFileWriter() {
-		return new MySSVW();
+		return new MySSVWWithHeading();
 	}
 }

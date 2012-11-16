@@ -18,6 +18,6 @@ public class CTCMFactory {
 	}
 	
 	public ICTCM getCTCM(Matrix Q, Matrix Si, double t, double h, double epsilon, int k) throws Exception {
-		return new MyCTCM(Q, Si, t, h, epsilon, k);
+		return new NoHAndTCheckCTCM(Q, Si, t, h, epsilon, k);
 	}
 }

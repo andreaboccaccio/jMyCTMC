@@ -32,7 +32,30 @@ class MyCTCM implements ICTCM {
 	
 	private List<Matrix> transitorio;
 	
-	
+	protected void setQ(Matrix q) {
+		Q = q;
+	}
+
+	protected void setT(double t) {
+		T = t;
+	}
+
+	protected void setH(double h) {
+		this.h = h;
+	}
+
+	protected void setK(int k) {
+		this.k = k;
+	}
+
+	protected void setEpsilon(double epsilon) {
+		this.epsilon = epsilon;
+	}
+
+	protected void setStazionario(Matrix stazionario) {
+		this.stazionario = stazionario;
+	}
+
 	protected MyCTCM(Matrix q, Matrix statoIniziale, double t, double h, double epsilon, int k) throws Exception {
 		super();
 		this.init(q, statoIniziale, t, h, epsilon, k);
@@ -83,11 +106,11 @@ class MyCTCM implements ICTCM {
 		}
 		this.statoIniziale = Si.copy();
 		if(t <= (1/lambdaMin)) {
-			throw new Exception("T <= 1/lambdaMin, T=" +T + " lambdaMin=" + lambdaMin + " 1/lambdaMin=" +(1/lambdaMin));
+			throw new TTooLow("T <= 1/lambdaMin, T=" +T + " lambdaMin=" + lambdaMin + " 1/lambdaMin=" +(1/lambdaMin));
 		}
 		this.T = t;
 		if(h >= (1/lambdaMax)) {
-			throw new Exception("h >= 1/lambdaMax, h=" +h + " lambdaMax=" + lambdaMax + " 1/lambdaMax=" +(1/lambdaMax));
+			throw new HTooHigh("h >= 1/lambdaMax, h=" +h + " lambdaMax=" + lambdaMax + " 1/lambdaMax=" +(1/lambdaMax));
 		}
 		this.h = h;
 		this.epsilon = epsilon;
@@ -102,9 +125,7 @@ class MyCTCM implements ICTCM {
 		this.computeTransitorio();
 	}
 	
-	protected Matrix getQ() {
-		return this.Q;
-	}
+	
 	
 	protected void computeStazionario() throws Exception {
 		
@@ -194,7 +215,7 @@ class MyCTCM implements ICTCM {
 		
 		this.transitorio = new ArrayList<>();
 		this.transitorio.add(tmpP);
-		for (i=1;(i*this.h)<this.T;++i) {
+		for (i=1;(i*this.h)<=this.T;++i) {
 			tmpP = tmpP.times(this.getPassoIntegrazione());
 			max = tmpP.getColumnDimension();
 			c = 0;
@@ -209,8 +230,14 @@ class MyCTCM implements ICTCM {
 		}
 	}
 	
+	@Override
 	public int getK() {
 		return k;
+	}
+	
+	@Override
+	public Matrix getQ() {
+		return this.Q;
 	}
 
 	@Override
@@ -229,6 +256,30 @@ class MyCTCM implements ICTCM {
 	@Override
 	public Matrix getStazionario() {
 		return this.stazionario;
+	}
+
+	@Override
+	public double getH() {
+		// TODO Auto-generated method stub
+		return this.h;
+	}
+
+	@Override
+	public double getT() {
+		// TODO Auto-generated method stub
+		return this.T;
+	}
+
+	@Override
+	public double getEpsilon() {
+		// TODO Auto-generated method stub
+		return this.epsilon;
+	}
+
+	@Override
+	public Matrix getSi() {
+		// TODO Auto-generated method stub
+		return this.statoIniziale;
 	}
 
 }
