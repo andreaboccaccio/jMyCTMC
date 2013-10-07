@@ -23,7 +23,7 @@ public class JMyCTCM {
 		String outputFilename;
 		int i = -1;
 		int max = -1;
-		ff.add("input.ssv");
+		ff.add("ctmc");
 		lf = DirectoryFactory.getInstance().getDirectory(".").getFiles(FileFilterFactory.getInstance().getFileFilter(ff));
 		
 		max = lf.size();
@@ -31,7 +31,7 @@ public class JMyCTCM {
 		for(i=0;i<max;++i) {
 			try {
 				inputFilename = lf.get(i).getAbsolutePath();
-				outputFilename = inputFilename.substring(0,inputFilename.lastIndexOf("input.ssv")) + "output.ssv";
+				outputFilename = inputFilename.substring(0,inputFilename.lastIndexOf("ctmc")) + "output.ctmc";
 				tmpCTCM = FileLoaderFactory.getInstance().getFileLoader().load(inputFilename);
 				FileWriterFactory.getInstance().getFileWriter().write(tmpCTCM, outputFilename);
 				System.out.println(inputFilename + " correttamente elaborato risultati nel file " + outputFilename);

@@ -16,6 +16,6 @@ public class FileLoaderFactory {
 	}
 	
 	public IFileLoader getFileLoader() {
-		return new MySSV();
+		return new MyCTMC();
 	}
 }
