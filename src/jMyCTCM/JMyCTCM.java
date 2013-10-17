@@ -31,7 +31,7 @@ public class JMyCTCM {
 		for(i=0;i<max;++i) {
 			try {
 				inputFilename = lf.get(i).getAbsolutePath();
-				outputFilename = inputFilename.substring(0,inputFilename.lastIndexOf("ctmc")) + "output.ctmc";
+				outputFilename = inputFilename.substring(0,inputFilename.lastIndexOf("ctmc")) + "ctmc.output.txt";
 				tmpCTCM = FileLoaderFactory.getInstance().getFileLoader().load(inputFilename);
 				FileWriterFactory.getInstance().getFileWriter().write(tmpCTCM, outputFilename);
 				System.out.println(inputFilename + " correttamente elaborato risultati nel file " + outputFilename);
