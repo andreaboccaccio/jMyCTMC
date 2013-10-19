@@ -1,4 +1,22 @@
-package boccaccio.andrea.ctmc;
+//Copyright (C)2012-2013
+//Andrea Boccaccio contact email: 4ndr34.b0cc4cc10@gmail.com
+
+//This file is part of jMyCTMC.
+
+//jMyCTMC is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+
+//jMyCTMC is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with jMyCTMC.  If not, see <http://www.gnu.org/licenses/>.
+
+package jMyCTMC.ctmc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +28,7 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 
 import Jama.Matrix;
 
-class MyCTCM implements ICTCM {
+class MyCTMC implements ICTMC {
 	
 	private Matrix Q;
 
@@ -56,7 +74,7 @@ class MyCTCM implements ICTCM {
 		this.stazionario = stazionario;
 	}
 
-	protected MyCTCM(Matrix q, Matrix statoIniziale, double t, double h, double epsilon, int k) throws Exception {
+	protected MyCTMC(Matrix q, Matrix statoIniziale, double t, double h, double epsilon, int k) throws Exception {
 		super();
 		this.init(q, statoIniziale, t, h, epsilon, k);
 	}
@@ -102,7 +120,7 @@ class MyCTCM implements ICTCM {
 			siCheck += Si.get(0, i);
 		}
 		if(siCheck != 1) {
-			throw new Exception("Somma componenti Vettore di Stato iniziale != 1");
+			throw new Exception("Starting vector components sum != 1");
 		}
 		this.statoIniziale = Si.copy();
 		if(t <= (1/lambdaMin)) {
@@ -137,7 +155,7 @@ class MyCTCM implements ICTCM {
 		double[][] ba = new double[1][n];
 		
 		if(!this.isIrreducible()) {
-			throw new Exception("Tentativo di calcolare il regime stazionario con catena NON irriducibile");
+			throw new Exception("Trying to compute steady state in a reducible CTMC.");
 		}
 		b = new Matrix(ba);
 		b.set(0,c,1);

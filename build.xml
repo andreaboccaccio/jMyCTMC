@@ -13,11 +13,11 @@
 	<property name="zipdist.dir"	value="${basedir}/zipDist" />
 	<property name="tgzdist.dir"	value="${basedir}/tgzDist"/>
 	<property name="impl.ver"	value="0.0.1"/>
-	<property name="mainClass"	value="jMyCTCM.JMyCTCM"/>
+	<property name="mainClass"	value="jMyCTMC.JMyCTMC"/>
     
 	<path id="libraries">
 		<fileset dir="${library.dir}">
-			<include name="*.jar"/>
+			<include name="*.jar"/>			
 		</fileset>
 	</path>
 	
@@ -89,6 +89,8 @@
 	<copy todir="${distlib.dir}">
 		<fileset dir="${library.dir}">
 			<include name="*.jar"/>
+			<include name="license-LGPL.txt"/>
+			<include name="README.md"/>
 		</fileset>
 	</copy>
 	</target>
