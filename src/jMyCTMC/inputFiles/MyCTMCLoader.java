@@ -27,11 +27,21 @@ import java.io.IOException;
 
 import Jama.Matrix;
 
-public class MyCTMCLoader implements IFileLoader {
+class MyCTMCLoader extends FileLoaderAbstract {
+	
+	public MyCTMCLoader(FileLoaderAbstract fa) {
+		this.successor = fa;
+	}
+	
+	@Override
+	protected boolean check(String pathname) {
+		return this.checkExtension(pathname, "CTMC");
+	}
 
+	@Override
 	public ICTMC load(String pathname) throws Exception {
 		ICTMC ret = null;
-		BufferedReader inputStrm = new BufferedReader(new FileReader(pathname));
+		BufferedReader inputStrm;
 		String currentLine;
 		String[] fields;
 		int i = -1;
@@ -43,37 +53,45 @@ public class MyCTMCLoader implements IFileLoader {
 		int k = -1;
 		double[][] si = null;
 		double[][] tmpQ = null;
-		i = 0;
-		try {
-			h = 0.1;
-			T = 1000;
-			e = 0.0001;
-			k = 100;
-			currentLine = inputStrm.readLine();
-			while(currentLine != null) {
-				if(currentLine.startsWith("# rows:")) {
-					fields = currentLine.split(":");
-					n = Integer.parseInt(fields[1].trim());
-					si = new double[1][n];
-					tmpQ = new double[n][n];
-				}else if((!currentLine.startsWith("#"))&&(currentLine.trim().length() > 0)) {
-					fields = currentLine.split(" ");
-					for(j = 0; j < n; ++j) {
-						tmpQ[i][j] = Double.parseDouble(fields[j]);
-					}
-					++i;
-				}
+		
+		if(this.check(pathname))
+		{
+			i = 0;
+			inputStrm = new BufferedReader(new FileReader(pathname));
+			try {
+				h = 0.1;
+				T = 1000;
+				e = 0.0001;
+				k = 100;
 				currentLine = inputStrm.readLine();
+				while(currentLine != null) {
+					if(currentLine.startsWith("# rows:")) {
+						fields = currentLine.split(":");
+						n = Integer.parseInt(fields[1].trim());
+						si = new double[1][n];
+						tmpQ = new double[n][n];
+					}else if((!currentLine.startsWith("#"))&&(currentLine.trim().length() > 0)) {
+						fields = currentLine.split(" ");
+						for(j = 0; j < n; ++j) {
+							tmpQ[i][j] = Double.parseDouble(fields[j]);
+						}
+						++i;
+					}
+					currentLine = inputStrm.readLine();
+				}
+				si[0][0] = 1;
+				for(j = 1; j < n; ++j) {
+					si[0][j] = 0;
+				}
+				ret = CTMCFactory.getInstance().getCTCM(new Matrix(tmpQ), new Matrix(si), T, h, e, k);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} finally {
+				inputStrm.close();
 			}
-			si[0][0] = 1;
-			for(j = 1; j < n; ++j) {
-				si[0][j] = 0;
-			}
-			ret = CTMCFactory.getInstance().getCTCM(new Matrix(tmpQ), new Matrix(si), T, h, e, k);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-			inputStrm.close();
+		}
+		else {
+			ret = this.toNext(pathname);
 		}
 		
 		return ret;

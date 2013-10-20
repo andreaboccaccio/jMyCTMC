@@ -9,6 +9,7 @@
 	<property name="jarlib.dir"	value="${jar.dir}/lib"/>
     <property name="library.dir" value="${basedir}/lib"/>
 	<property name="scripts.dir" value="${basedir}/scripts"/>
+	<property name="confFiles.dir" value="${basedir}/configurationFiles"/>
 	<property name="distlib.dir"	value="${dist.dir}/lib"/>
 	<property name="zipdist.dir"	value="${basedir}/zipDist" />
 	<property name="tgzdist.dir"	value="${basedir}/tgzDist"/>
@@ -84,6 +85,10 @@
 		<fileset dir="${scripts.dir}">
 			<include name="*.bat"/>
 			<include name="*.bash"/>
+			<include name="COPYING"/>
+		</fileset>
+		<fileset dir="${confFiles.dir}">
+			<include name="*.xml"/>
 		</fileset>
 	</copy>
 	<copy todir="${distlib.dir}">

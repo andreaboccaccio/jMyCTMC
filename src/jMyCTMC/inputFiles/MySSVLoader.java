@@ -27,12 +27,21 @@ import java.io.IOException;
 
 import Jama.Matrix;
 
-public class MySSVLoader implements IFileLoader {
+class MySSVLoader extends FileLoaderAbstract {
+
+	public MySSVLoader(FileLoaderAbstract fa) {
+		this.successor = fa;
+	}
+	
+	@Override
+	protected boolean check(String pathname) {
+		return this.checkExtension(pathname, "SSV");
+	}
 
 	@Override
 	public ICTMC load(String pathname) throws Exception {
 		ICTMC ret = null;
-		BufferedReader inputStrm = new BufferedReader(new FileReader(pathname));
+		BufferedReader inputStrm;
 		String currentLine;
 		String[] fields;
 		int i = -1;
@@ -49,58 +58,65 @@ public class MySSVLoader implements IFileLoader {
 		double[][] tmpQ = null;
 		double rowSum = -1;
 		
-		i = 0;
-		try {
-			currentLine = inputStrm.readLine();
-			while(currentLine != null) {
-				fields = currentLine.split(";");
-				switch (i) {
-				case 0:
-					n = Integer.parseInt(fields[0]);
-					h = Double.parseDouble(fields[1]);
-					T = Double.parseDouble(fields[2]);
-					e = Double.parseDouble(fields[3]);
-					k = Integer.parseInt(fields[4]);
-					si = new double[1][n];
-					tmpQ = new double[n][n];
-					break;
-				case 1:
-					for(j = 0; j < n; ++j) {
-						si[0][j] = Double.parseDouble(fields[j]);
+		if(this.check(pathname))
+		{
+			i = 0;
+			inputStrm = new BufferedReader(new FileReader(pathname));			
+			try {
+				currentLine = inputStrm.readLine();
+				while(currentLine != null) {
+					fields = currentLine.split(";");
+					switch (i) {
+					case 0:
+						n = Integer.parseInt(fields[0]);
+						h = Double.parseDouble(fields[1]);
+						T = Double.parseDouble(fields[2]);
+						e = Double.parseDouble(fields[3]);
+						k = Integer.parseInt(fields[4]);
+						si = new double[1][n];
+						tmpQ = new double[n][n];
+						break;
+					case 1:
+						for(j = 0; j < n; ++j) {
+							si[0][j] = Double.parseDouble(fields[j]);
+						}
+						break;
+	
+					default:
+						tmpI = (i-2);
+						tmpF = 0;
+						for(j = 0; j < n; ++j) {
+							if(j==tmpI) {
+								tmpQ[tmpI][j] = 0;
+							} else {
+								tmpQ[tmpI][j] = Double.parseDouble(fields[tmpF]);
+								++tmpF;
+							}
+						}
+						
+						break;
 					}
-					break;
-
-				default:
-					tmpI = (i-2);
-					tmpF = 0;
-					for(j = 0; j < n; ++j) {
-						if(j==tmpI) {
-							tmpQ[tmpI][j] = 0;
-						} else {
-							tmpQ[tmpI][j] = Double.parseDouble(fields[tmpF]);
-							++tmpF;
+					++i;
+					currentLine = inputStrm.readLine();
+				}
+				for(j = 0; j < n; ++j) {
+					rowSum = 0;
+					for(tmpJ = 0; tmpJ < n; ++tmpJ) {
+						if(tmpJ != j) {
+							rowSum += tmpQ[j][tmpJ];
 						}
 					}
-					
-					break;
+					tmpQ[j][j] = -rowSum;
 				}
-				++i;
-				currentLine = inputStrm.readLine();
+				ret = CTMCFactory.getInstance().getCTCM(new Matrix(tmpQ), new Matrix(si), T, h, e, k);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			} finally {
+				inputStrm.close();
 			}
-			for(j = 0; j < n; ++j) {
-				rowSum = 0;
-				for(tmpJ = 0; tmpJ < n; ++tmpJ) {
-					if(tmpJ != j) {
-						rowSum += tmpQ[j][tmpJ];
-					}
-				}
-				tmpQ[j][j] = -rowSum;
-			}
-			ret = CTMCFactory.getInstance().getCTCM(new Matrix(tmpQ), new Matrix(si), T, h, e, k);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-			inputStrm.close();
+		}
+		else {
+			ret = this.toNext(pathname);
 		}
 		
 		return ret;

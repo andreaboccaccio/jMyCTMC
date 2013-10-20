@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Default Configuration</comment>
+	<entry key="FileLoaderClasses">jMyCTMC.inputFiles.MySSVLoader,jMyCTMC.inputFiles.MyCTMCLoader</entry>
+</properties>

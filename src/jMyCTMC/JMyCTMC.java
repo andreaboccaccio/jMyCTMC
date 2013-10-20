@@ -21,7 +21,7 @@ package jMyCTMC;
 import jMyCTMC.ctmc.ICTMC;
 import jMyCTMC.filesystem.DirectoryFactory;
 import jMyCTMC.filesystem.FileFilterFactory;
-import jMyCTMC.inputFiles.FileLoaderFactory;
+import jMyCTMC.inputFiles.FileLoaderCor;
 import jMyCTMC.outputFiles.FileWriterFactory;
 
 import java.io.File;
@@ -41,6 +41,7 @@ public class JMyCTMC {
 		String outputFilename;
 		int i = -1;
 		int max = -1;
+		ff.add("ssv");
 		ff.add("ctmc");
 		lf = DirectoryFactory.getInstance().getDirectory(".").getFiles(FileFilterFactory.getInstance().getFileFilter(ff));
 		
@@ -49,8 +50,8 @@ public class JMyCTMC {
 		for(i=0;i<max;++i) {
 			try {
 				inputFilename = lf.get(i).getAbsolutePath();
-				outputFilename = inputFilename.substring(0,inputFilename.lastIndexOf("ctmc")) + "ctmc.output.txt";
-				tmpCTCM = FileLoaderFactory.getInstance().getFileLoader().load(inputFilename);
+				outputFilename = inputFilename + ".output.txt";
+				tmpCTCM = FileLoaderCor.getInstance().load(inputFilename);
 				FileWriterFactory.getInstance().getFileWriter().write(tmpCTCM, outputFilename);
 				System.out.println(inputFilename + " computed, results in " + outputFilename);
 				
