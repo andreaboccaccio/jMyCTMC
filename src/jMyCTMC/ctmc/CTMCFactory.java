@@ -18,6 +18,13 @@
 
 package jMyCTMC.ctmc;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import jMyCTMC.inputFiles.NullFileLoader;
+import jMyCTMC.properties.IMyProperties;
+import jMyCTMC.properties.MyPropertiesFactory;
 import Jama.Matrix;
 
 public class CTMCFactory {
@@ -36,6 +43,21 @@ public class CTMCFactory {
 	}
 	
 	public ICTMC getCTCM(Matrix Q, Matrix Si, double t, double h, double epsilon, int k) throws Exception {
-		return new NoHAndTCheckCTMC(Q, Si, t, h, epsilon, k);
+		IMyProperties mp;
+		ICTMC ret = null;
+		
+		try {
+			Class<?> cm = Class.forName("Jama.Matrix");
+			mp = MyPropertiesFactory.getInstance().getProp();
+			Class<?> cl = Class.forName(mp.getProperty("ICTMCClass").trim());
+			Constructor<?> ci = cl.getDeclaredConstructor(new Class<?>[]{ cm, cm, double.class, double.class, double.class, int.class });
+			ret = (ICTMC) ci.newInstance(new Object[] { Q, Si, t, h, epsilon, k });
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+			ret = new NoHAndTCheckCTMC(Q, Si, t, h, epsilon, k);
+		}
+		
+		return ret;
 	}
 }

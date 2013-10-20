@@ -3,4 +3,5 @@
 <properties>
 	<comment>Default Configuration</comment>
 	<entry key="FileLoaderClasses">jMyCTMC.inputFiles.MySSVLoader,jMyCTMC.inputFiles.MyCTMCLoader</entry>
+	<entry key="ICTMCClass">jMyCTMC.ctmc.NoHAndTCheckCTMC</entry>
 </properties>
