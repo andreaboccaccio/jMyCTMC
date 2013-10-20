@@ -29,7 +29,7 @@ import Jama.Matrix;
 
 class MySSVLoader extends FileLoaderAbstract {
 
-	public MySSVLoader(FileLoaderAbstract fa) {
+	MySSVLoader(FileLoaderAbstract fa) {
 		this.successor = fa;
 	}
 	

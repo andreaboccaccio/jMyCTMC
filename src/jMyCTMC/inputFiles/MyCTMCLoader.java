@@ -29,7 +29,7 @@ import Jama.Matrix;
 
 class MyCTMCLoader extends FileLoaderAbstract {
 	
-	public MyCTMCLoader(FileLoaderAbstract fa) {
+	MyCTMCLoader(FileLoaderAbstract fa) {
 		this.successor = fa;
 	}
 	

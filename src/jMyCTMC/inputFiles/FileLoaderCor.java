@@ -43,7 +43,7 @@ private static FileLoaderCor instance=null;
 				String curCl = classes[i].trim();
 				try {
 					Class<?> cl = Class.forName(curCl);
-					Constructor<?> ci = cl.getConstructor(new Class<?>[]{ Class.forName("jMyCTMC.inputFiles.FileLoaderAbstract") });
+					Constructor<?> ci = cl.getDeclaredConstructor(new Class<?>[]{ Class.forName("jMyCTMC.inputFiles.FileLoaderAbstract") });
 					FileLoaderAbstract fa = (FileLoaderAbstract) ci.newInstance(new Object[] { lastOne });
 					lastOne = fa;
 					ok = true;
